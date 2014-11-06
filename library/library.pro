@@ -11,8 +11,10 @@ QMAKE_CXXFLAGS += -std=c++11
 INCLUDEPATH = $$PWD/include/
 
 SOURCES += \
-    src/MessageDigest.cpp
+    src/MessageDigest.cpp \
+    src/MessageDigestMD5.cpp
 
 HEADERS += \
     include/MessageDigest/MessageDigest.hpp \
-    include/MessageDigest/MessageDigestImpl.hpp
+    include/MessageDigest/MessageDigestImpl.hpp \
+    include/MessageDigest/MessageDigestMD5.hpp
