@@ -7,11 +7,13 @@ QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += \
     src/main.cpp \
-    src/MessageDigestMD5Test.cpp
+    src/MessageDigestMD5Test.cpp \
+    src/MessageDigestSHA1Test.cpp
 
 HEADERS += \
     src/TestConstants.h \
-    src/MessageDigestMD5Test.hpp
+    src/MessageDigestMD5Test.hpp \
+    src/MessageDigestSHA1Test.hpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../library/release/ -lMessageDiggest
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../library/debug/ -lMessageDiggest
