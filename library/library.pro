@@ -12,11 +12,13 @@ INCLUDEPATH = $$PWD/include/
 
 SOURCES += \
     src/MessageDigest.cpp \
+    src/MessageDigestCRC32.cpp \
     src/MessageDigestMD5.cpp \
     src/MessageDigestSHA1.cpp
 
 HEADERS += \
     include/MessageDigest/MessageDigest.hpp \
     include/MessageDigest/MessageDigestImpl.hpp \
+    include/MessageDigest/MessageDigestCRC32.hpp \
     include/MessageDigest/MessageDigestMD5.hpp \
     include/MessageDigest/MessageDigestSHA1.hpp
