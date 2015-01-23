@@ -18,7 +18,7 @@ libMessageDigest currently supports the following algorithms:
 
 How to use
 --------------------------------------
-```
+```c++
 #include <iostream>
 #include "MessageDigest/MessageDigest.hpp"
 
