@@ -8,7 +8,6 @@
 #include <iostream>
 
 #include "MessageDigest/MessageDigest.hpp"
-#include "MessageDigest/MessageDigestImpl.hpp"
 
 using namespace std;
 

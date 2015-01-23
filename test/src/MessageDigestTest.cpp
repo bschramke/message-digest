@@ -1,5 +1,5 @@
 #include "MessageDigestTest.hpp"
-#include "MessageDigest/MessageDigestImpl.hpp"
+#include "MessageDigest/MessageDigest.hpp"
 #include "TestConstants.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION (MessageDigestTest);

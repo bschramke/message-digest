@@ -4,7 +4,6 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-
 class MessageDigestCRC32Test : public CPPUNIT_NS :: TestFixture
 {
   CPPUNIT_TEST_SUITE (MessageDigestCRC32Test);

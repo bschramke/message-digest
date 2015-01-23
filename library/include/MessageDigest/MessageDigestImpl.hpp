@@ -8,8 +8,6 @@
 #ifndef MessageDigestImpl_INCLUDED
 #define MessageDigestImpl_INCLUDED
 
-#include "MessageDigest/MessageDigest.hpp"
-
 #include <string>
 #include <memory>
 
@@ -29,14 +27,6 @@ public:
 	std::string operator()(const void* data, size_t numBytes);
 	std::string operator()(const std::string& text);
 
-};
-
-template<class T>
-class MessageDigestImplRegistrar {
-public:
-  MessageDigestImplRegistrar(const std::string& name){
-    MessageDigest::registerAlgorithm(name,&T::create);
-  }
 };
 
 inline void MessageDigestImpl::update(const void *data, size_t len) { update(data,0,len); }
@@ -63,4 +53,3 @@ inline std::string MessageDigestImpl::operator()(const std::string &text)
 }
 
 #endif //MessageDigestImpl_INCLUDED
-

@@ -14,7 +14,7 @@
 #include <functional>
 #include <vector>
 
-class MessageDigestImpl;
+#include "MessageDigest/MessageDigestImpl.hpp"
 
 typedef std::unique_ptr<MessageDigestImpl> MessageDigestImplPtr;
 typedef std::function<std::unique_ptr<MessageDigestImpl>(void)> MessageDigestImplCreatorFunc;
@@ -43,6 +43,14 @@ protected:
 private:
 	MessageDigest() = default;
 	MessageDigestImplPtr mDigestImpl;
+};
+
+template<class T>
+class MessageDigestImplRegistrar {
+public:
+  MessageDigestImplRegistrar(const std::string& name){
+    MessageDigest::registerAlgorithm(name,&T::create);
+  }
 };
 
 #endif //MessageDigest_INCLUDED
