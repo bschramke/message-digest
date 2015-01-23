@@ -12,9 +12,9 @@ base class (like java.security.MessageDigest), without introducing external depe
 Supported algorithms
 --------------------------------------
 libMessageDigest currently supports the following algorithms:
-- CRC32
-- MD5
-- SHA1
+* CRC32
+* MD5
+* SHA1
 
 How to use
 --------------------------------------
