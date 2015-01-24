@@ -1,5 +1,7 @@
 MessageDigest library for C++
 ==================
+[![Build Status](https://travis-ci.org/bschramke/message-digest.svg)](https://travis-ci.org/bschramke/message-digest)
+
 libMessageDigest is an free and easy-to-use message digest library for C++.
 
 Why another message digest library?
