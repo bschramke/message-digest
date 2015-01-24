@@ -3,7 +3,9 @@ compiler:
   - clang
   - gcc
 
-# command to run tests
+install:
+  - .travis_scripts/cmake.sh
+  
 script: 
   - mkdir build && cd build
   - cmake ../
