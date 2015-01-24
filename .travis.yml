@@ -5,6 +5,7 @@ compiler:
 
 install:
   - .travis_scripts/cmake.sh
+  - sudo apt-get install libcppunit-dev
   
 script: 
   - mkdir build && cd build
