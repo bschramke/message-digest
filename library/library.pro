@@ -15,6 +15,8 @@ SOURCES += \
     src/MessageDigestCRC32.cpp \
     src/MessageDigestMD5.cpp \
     src/MessageDigestSHA1.cpp \
+    src/MessageDigestSHA2.cpp \
+    src/MessageDigestSHA224.cpp \
     src/MessageDigestSHA256.cpp
 
 HEADERS += \
@@ -23,4 +25,6 @@ HEADERS += \
     include/MessageDigest/MessageDigestCRC32.hpp \
     include/MessageDigest/MessageDigestMD5.hpp \
     include/MessageDigest/MessageDigestSHA1.hpp \
+    include/MessageDigest/MessageDigestSHA224.hpp \
+    include/MessageDigest/MessageDigestSHA2.hpp \
     include/MessageDigest/MessageDigestSHA256.hpp
