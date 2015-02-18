@@ -50,10 +50,6 @@ namespace
     return c ^ (b | ~d);
   }
 
-  inline uint32_t rotateLeft(uint32_t a, uint32_t c)
-  {
-    return (a << c) | (a >> (32 - c));
-  }
 }
 
 MessageDigestMD5::MessageDigestMD5()

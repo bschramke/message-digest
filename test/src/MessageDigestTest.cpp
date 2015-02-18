@@ -68,3 +68,22 @@ void MessageDigestTest::testSHA1Implementation()
   digestImpl->update(text.c_str(),5,text.length()-5);
   CPPUNIT_ASSERT_EQUAL(TEXT1_HASH_SHA1,digestImpl->digest());
 }
+
+void MessageDigestTest::testSHA256Implementation()
+{
+  auto digestImpl = MessageDigest::createInstance("SHA256");
+  std::string text = TEXT2;
+
+  CPPUNIT_ASSERT_EQUAL(ALGORITHM_SHA256,digestImpl->getAlgorithm());
+
+  digestImpl->update(TEXT1);
+  CPPUNIT_ASSERT_EQUAL(TEXT1_HASH_SHA256,digestImpl->digest());
+
+  digestImpl->reset();
+  digestImpl->update(TEXT2);
+  CPPUNIT_ASSERT_EQUAL(TEXT2_HASH_SHA256,digestImpl->digest());
+
+  digestImpl->reset();
+  digestImpl->update(text.c_str(),5,text.length()-5);
+  CPPUNIT_ASSERT_EQUAL(TEXT1_HASH_SHA256,digestImpl->digest());
+}

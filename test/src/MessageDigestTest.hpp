@@ -10,6 +10,7 @@ class MessageDigestTest : public CPPUNIT_NS :: TestFixture
   CPPUNIT_TEST (testCRC32Implementation);
   CPPUNIT_TEST (testMD5Implementation);
   CPPUNIT_TEST (testSHA1Implementation);
+  CPPUNIT_TEST (testSHA256Implementation);
   CPPUNIT_TEST_SUITE_END ();
 
 public:
@@ -20,6 +21,7 @@ protected:
   void testCRC32Implementation (void);
   void testMD5Implementation (void);
   void testSHA1Implementation (void);
+  void testSHA256Implementation (void);
 
 private:
 };
