@@ -6,7 +6,14 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 # Sources
-set(TEST_SRCS src/main.cpp src/MessageDigestCRC32Test.cpp src/MessageDigestMD5Test.cpp src/MessageDigestSHA1Test.cpp src/MessageDigestTest.cpp )
+set(TEST_SRCS src/main.cpp 
+              src/MessageDigestCRC32Test.cpp 
+              src/MessageDigestMD5Test.cpp 
+              src/MessageDigestSHA1Test.cpp  
+              src/MessageDigestSHA224Test.cpp  
+              src/MessageDigestSHA256Test.cpp 
+              src/MessageDigestTest.cpp 
+)
 
 include_directories(src)
 include_directories(../library/include)
