@@ -45,25 +45,6 @@ namespace
     return (b & c) | (b & d) | (c & d);
   }
 
-  inline uint32_t rotate(uint32_t a, uint32_t c)
-  {
-    return (a << c) | (a >> (32 - c));
-  }
-
-  inline uint32_t swap(uint32_t x)
-  {
-#if defined(__GNUC__) || defined(__clang__)
-    return __builtin_bswap32(x);
-#endif
-#ifdef MSC_VER
-    return _byteswap_ulong(x);
-#endif
-
-    return (x >> 24) |
-        ((x >>  8) & 0x0000FF00) |
-        ((x <<  8) & 0x00FF0000) |
-        (x << 24);
-  }
 }
 
 MessageDigestSHA1::MessageDigestSHA1()
@@ -212,51 +193,51 @@ void MessageDigestSHA1::processBlock(const void *data)
   // extend to 80 words
   for (int i = 16; i < 80; i++)
     {
-      words[i] = rotate(words[i-3] ^ words[i-8] ^ words[i-14] ^ words[i-16], 1);
+      words[i] = rotateLeft(words[i-3] ^ words[i-8] ^ words[i-14] ^ words[i-16], 1);
     }
 
   // first round
   for (int i = 0; i < 4; i++)
     {
       int offset = 5*i;
-      e += rotate(a,5) + f1(b,c,d) + words[offset  ] + K[0]; b = rotate(b,30);
-      d += rotate(e,5) + f1(a,b,c) + words[offset+1] + K[0]; a = rotate(a,30);
-      c += rotate(d,5) + f1(e,a,b) + words[offset+2] + K[0]; e = rotate(e,30);
-      b += rotate(c,5) + f1(d,e,a) + words[offset+3] + K[0]; d = rotate(d,30);
-      a += rotate(b,5) + f1(c,d,e) + words[offset+4] + K[0]; c = rotate(c,30);
+      e += rotateLeft(a,5) + f1(b,c,d) + words[offset  ] + K[0]; b = rotateLeft(b,30);
+      d += rotateLeft(e,5) + f1(a,b,c) + words[offset+1] + K[0]; a = rotateLeft(a,30);
+      c += rotateLeft(d,5) + f1(e,a,b) + words[offset+2] + K[0]; e = rotateLeft(e,30);
+      b += rotateLeft(c,5) + f1(d,e,a) + words[offset+3] + K[0]; d = rotateLeft(d,30);
+      a += rotateLeft(b,5) + f1(c,d,e) + words[offset+4] + K[0]; c = rotateLeft(c,30);
     }
 
   // second round
   for (int i = 4; i < 8; i++)
     {
       int offset = 5*i;
-      e += rotate(a,5) + f2(b,c,d) + words[offset  ] + K[1]; b = rotate(b,30);
-      d += rotate(e,5) + f2(a,b,c) + words[offset+1] + K[1]; a = rotate(a,30);
-      c += rotate(d,5) + f2(e,a,b) + words[offset+2] + K[1]; e = rotate(e,30);
-      b += rotate(c,5) + f2(d,e,a) + words[offset+3] + K[1]; d = rotate(d,30);
-      a += rotate(b,5) + f2(c,d,e) + words[offset+4] + K[1]; c = rotate(c,30);
+      e += rotateLeft(a,5) + f2(b,c,d) + words[offset  ] + K[1]; b = rotateLeft(b,30);
+      d += rotateLeft(e,5) + f2(a,b,c) + words[offset+1] + K[1]; a = rotateLeft(a,30);
+      c += rotateLeft(d,5) + f2(e,a,b) + words[offset+2] + K[1]; e = rotateLeft(e,30);
+      b += rotateLeft(c,5) + f2(d,e,a) + words[offset+3] + K[1]; d = rotateLeft(d,30);
+      a += rotateLeft(b,5) + f2(c,d,e) + words[offset+4] + K[1]; c = rotateLeft(c,30);
     }
 
   // third round
   for (int i = 8; i < 12; i++)
     {
       int offset = 5*i;
-      e += rotate(a,5) + f3(b,c,d) + words[offset  ] + K[2]; b = rotate(b,30);
-      d += rotate(e,5) + f3(a,b,c) + words[offset+1] + K[2]; a = rotate(a,30);
-      c += rotate(d,5) + f3(e,a,b) + words[offset+2] + K[2]; e = rotate(e,30);
-      b += rotate(c,5) + f3(d,e,a) + words[offset+3] + K[2]; d = rotate(d,30);
-      a += rotate(b,5) + f3(c,d,e) + words[offset+4] + K[2]; c = rotate(c,30);
+      e += rotateLeft(a,5) + f3(b,c,d) + words[offset  ] + K[2]; b = rotateLeft(b,30);
+      d += rotateLeft(e,5) + f3(a,b,c) + words[offset+1] + K[2]; a = rotateLeft(a,30);
+      c += rotateLeft(d,5) + f3(e,a,b) + words[offset+2] + K[2]; e = rotateLeft(e,30);
+      b += rotateLeft(c,5) + f3(d,e,a) + words[offset+3] + K[2]; d = rotateLeft(d,30);
+      a += rotateLeft(b,5) + f3(c,d,e) + words[offset+4] + K[2]; c = rotateLeft(c,30);
     }
 
   // fourth round
   for (int i = 12; i < 16; i++)
     {
       int offset = 5*i;
-      e += rotate(a,5) + f2(b,c,d) + words[offset  ] + K[3]; b = rotate(b,30);
-      d += rotate(e,5) + f2(a,b,c) + words[offset+1] + K[3]; a = rotate(a,30);
-      c += rotate(d,5) + f2(e,a,b) + words[offset+2] + K[3]; e = rotate(e,30);
-      b += rotate(c,5) + f2(d,e,a) + words[offset+3] + K[3]; d = rotate(d,30);
-      a += rotate(b,5) + f2(c,d,e) + words[offset+4] + K[3]; c = rotate(c,30);
+      e += rotateLeft(a,5) + f2(b,c,d) + words[offset  ] + K[3]; b = rotateLeft(b,30);
+      d += rotateLeft(e,5) + f2(a,b,c) + words[offset+1] + K[3]; a = rotateLeft(a,30);
+      c += rotateLeft(d,5) + f2(e,a,b) + words[offset+2] + K[3]; e = rotateLeft(e,30);
+      b += rotateLeft(c,5) + f2(d,e,a) + words[offset+3] + K[3]; d = rotateLeft(d,30);
+      a += rotateLeft(b,5) + f2(c,d,e) + words[offset+4] + K[3]; c = rotateLeft(c,30);
     }
 
   // update hash

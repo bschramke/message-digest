@@ -50,7 +50,7 @@ namespace
     return c ^ (b | ~d);
   }
 
-  inline uint32_t rotate(uint32_t a, uint32_t c)
+  inline uint32_t rotateLeft(uint32_t a, uint32_t c)
   {
     return (a << c) | (a >> (32 - c));
   }
@@ -180,88 +180,88 @@ void MessageDigestMD5::processBlock(const void *data)
   const uint32_t* words = (uint32_t*) data;
 
   // first round
-  a = rotate(a + f1(b,c,d) + words[0]  + 0xd76aa478,  7) + b;
-  d = rotate(d + f1(a,b,c) + words[1]  + 0xe8c7b756, 12) + a;
-  c = rotate(c + f1(d,a,b) + words[2]  + 0x242070db, 17) + d;
-  b = rotate(b + f1(c,d,a) + words[3]  + 0xc1bdceee, 22) + c;
+  a = rotateLeft(a + f1(b,c,d) + words[0]  + 0xd76aa478,  7) + b;
+  d = rotateLeft(d + f1(a,b,c) + words[1]  + 0xe8c7b756, 12) + a;
+  c = rotateLeft(c + f1(d,a,b) + words[2]  + 0x242070db, 17) + d;
+  b = rotateLeft(b + f1(c,d,a) + words[3]  + 0xc1bdceee, 22) + c;
 
-  a = rotate(a + f1(b,c,d) + words[4]  + 0xf57c0faf,  7) + b;
-  d = rotate(d + f1(a,b,c) + words[5]  + 0x4787c62a, 12) + a;
-  c = rotate(c + f1(d,a,b) + words[6]  + 0xa8304613, 17) + d;
-  b = rotate(b + f1(c,d,a) + words[7]  + 0xfd469501, 22) + c;
+  a = rotateLeft(a + f1(b,c,d) + words[4]  + 0xf57c0faf,  7) + b;
+  d = rotateLeft(d + f1(a,b,c) + words[5]  + 0x4787c62a, 12) + a;
+  c = rotateLeft(c + f1(d,a,b) + words[6]  + 0xa8304613, 17) + d;
+  b = rotateLeft(b + f1(c,d,a) + words[7]  + 0xfd469501, 22) + c;
 
-  a = rotate(a + f1(b,c,d) + words[8]  + 0x698098d8,  7) + b;
-  d = rotate(d + f1(a,b,c) + words[9]  + 0x8b44f7af, 12) + a;
-  c = rotate(c + f1(d,a,b) + words[10] + 0xffff5bb1, 17) + d;
-  b = rotate(b + f1(c,d,a) + words[11] + 0x895cd7be, 22) + c;
+  a = rotateLeft(a + f1(b,c,d) + words[8]  + 0x698098d8,  7) + b;
+  d = rotateLeft(d + f1(a,b,c) + words[9]  + 0x8b44f7af, 12) + a;
+  c = rotateLeft(c + f1(d,a,b) + words[10] + 0xffff5bb1, 17) + d;
+  b = rotateLeft(b + f1(c,d,a) + words[11] + 0x895cd7be, 22) + c;
 
-  a = rotate(a + f1(b,c,d) + words[12] + 0x6b901122,  7) + b;
-  d = rotate(d + f1(a,b,c) + words[13] + 0xfd987193, 12) + a;
-  c = rotate(c + f1(d,a,b) + words[14] + 0xa679438e, 17) + d;
-  b = rotate(b + f1(c,d,a) + words[15] + 0x49b40821, 22) + c;
+  a = rotateLeft(a + f1(b,c,d) + words[12] + 0x6b901122,  7) + b;
+  d = rotateLeft(d + f1(a,b,c) + words[13] + 0xfd987193, 12) + a;
+  c = rotateLeft(c + f1(d,a,b) + words[14] + 0xa679438e, 17) + d;
+  b = rotateLeft(b + f1(c,d,a) + words[15] + 0x49b40821, 22) + c;
 
   // second round
-  a = rotate(a + f2(b,c,d) + words[1]  + 0xf61e2562,  5) + b;
-  d = rotate(d + f2(a,b,c) + words[6]  + 0xc040b340,  9) + a;
-  c = rotate(c + f2(d,a,b) + words[11] + 0x265e5a51, 14) + d;
-  b = rotate(b + f2(c,d,a) + words[0]  + 0xe9b6c7aa, 20) + c;
+  a = rotateLeft(a + f2(b,c,d) + words[1]  + 0xf61e2562,  5) + b;
+  d = rotateLeft(d + f2(a,b,c) + words[6]  + 0xc040b340,  9) + a;
+  c = rotateLeft(c + f2(d,a,b) + words[11] + 0x265e5a51, 14) + d;
+  b = rotateLeft(b + f2(c,d,a) + words[0]  + 0xe9b6c7aa, 20) + c;
 
-  a = rotate(a + f2(b,c,d) + words[5]  + 0xd62f105d,  5) + b;
-  d = rotate(d + f2(a,b,c) + words[10] + 0x02441453,  9) + a;
-  c = rotate(c + f2(d,a,b) + words[15] + 0xd8a1e681, 14) + d;
-  b = rotate(b + f2(c,d,a) + words[4]  + 0xe7d3fbc8, 20) + c;
+  a = rotateLeft(a + f2(b,c,d) + words[5]  + 0xd62f105d,  5) + b;
+  d = rotateLeft(d + f2(a,b,c) + words[10] + 0x02441453,  9) + a;
+  c = rotateLeft(c + f2(d,a,b) + words[15] + 0xd8a1e681, 14) + d;
+  b = rotateLeft(b + f2(c,d,a) + words[4]  + 0xe7d3fbc8, 20) + c;
 
-  a = rotate(a + f2(b,c,d) + words[9]  + 0x21e1cde6,  5) + b;
-  d = rotate(d + f2(a,b,c) + words[14] + 0xc33707d6,  9) + a;
-  c = rotate(c + f2(d,a,b) + words[3]  + 0xf4d50d87, 14) + d;
-  b = rotate(b + f2(c,d,a) + words[8]  + 0x455a14ed, 20) + c;
+  a = rotateLeft(a + f2(b,c,d) + words[9]  + 0x21e1cde6,  5) + b;
+  d = rotateLeft(d + f2(a,b,c) + words[14] + 0xc33707d6,  9) + a;
+  c = rotateLeft(c + f2(d,a,b) + words[3]  + 0xf4d50d87, 14) + d;
+  b = rotateLeft(b + f2(c,d,a) + words[8]  + 0x455a14ed, 20) + c;
 
-  a = rotate(a + f2(b,c,d) + words[13] + 0xa9e3e905,  5) + b;
-  d = rotate(d + f2(a,b,c) + words[2]  + 0xfcefa3f8,  9) + a;
-  c = rotate(c + f2(d,a,b) + words[7]  + 0x676f02d9, 14) + d;
-  b = rotate(b + f2(c,d,a) + words[12] + 0x8d2a4c8a, 20) + c;
+  a = rotateLeft(a + f2(b,c,d) + words[13] + 0xa9e3e905,  5) + b;
+  d = rotateLeft(d + f2(a,b,c) + words[2]  + 0xfcefa3f8,  9) + a;
+  c = rotateLeft(c + f2(d,a,b) + words[7]  + 0x676f02d9, 14) + d;
+  b = rotateLeft(b + f2(c,d,a) + words[12] + 0x8d2a4c8a, 20) + c;
 
   // third round
-  a = rotate(a + f3(b,c,d) + words[5]  + 0xfffa3942,  4) + b;
-  d = rotate(d + f3(a,b,c) + words[8]  + 0x8771f681, 11) + a;
-  c = rotate(c + f3(d,a,b) + words[11] + 0x6d9d6122, 16) + d;
-  b = rotate(b + f3(c,d,a) + words[14] + 0xfde5380c, 23) + c;
+  a = rotateLeft(a + f3(b,c,d) + words[5]  + 0xfffa3942,  4) + b;
+  d = rotateLeft(d + f3(a,b,c) + words[8]  + 0x8771f681, 11) + a;
+  c = rotateLeft(c + f3(d,a,b) + words[11] + 0x6d9d6122, 16) + d;
+  b = rotateLeft(b + f3(c,d,a) + words[14] + 0xfde5380c, 23) + c;
 
-  a = rotate(a + f3(b,c,d) + words[1]  + 0xa4beea44,  4) + b;
-  d = rotate(d + f3(a,b,c) + words[4]  + 0x4bdecfa9, 11) + a;
-  c = rotate(c + f3(d,a,b) + words[7]  + 0xf6bb4b60, 16) + d;
-  b = rotate(b + f3(c,d,a) + words[10] + 0xbebfbc70, 23) + c;
+  a = rotateLeft(a + f3(b,c,d) + words[1]  + 0xa4beea44,  4) + b;
+  d = rotateLeft(d + f3(a,b,c) + words[4]  + 0x4bdecfa9, 11) + a;
+  c = rotateLeft(c + f3(d,a,b) + words[7]  + 0xf6bb4b60, 16) + d;
+  b = rotateLeft(b + f3(c,d,a) + words[10] + 0xbebfbc70, 23) + c;
 
-  a = rotate(a + f3(b,c,d) + words[13] + 0x289b7ec6,  4) + b;
-  d = rotate(d + f3(a,b,c) + words[0]  + 0xeaa127fa, 11) + a;
-  c = rotate(c + f3(d,a,b) + words[3]  + 0xd4ef3085, 16) + d;
-  b = rotate(b + f3(c,d,a) + words[6]  + 0x04881d05, 23) + c;
+  a = rotateLeft(a + f3(b,c,d) + words[13] + 0x289b7ec6,  4) + b;
+  d = rotateLeft(d + f3(a,b,c) + words[0]  + 0xeaa127fa, 11) + a;
+  c = rotateLeft(c + f3(d,a,b) + words[3]  + 0xd4ef3085, 16) + d;
+  b = rotateLeft(b + f3(c,d,a) + words[6]  + 0x04881d05, 23) + c;
 
-  a = rotate(a + f3(b,c,d) + words[9]  + 0xd9d4d039,  4) + b;
-  d = rotate(d + f3(a,b,c) + words[12] + 0xe6db99e5, 11) + a;
-  c = rotate(c + f3(d,a,b) + words[15] + 0x1fa27cf8, 16) + d;
-  b = rotate(b + f3(c,d,a) + words[2]  + 0xc4ac5665, 23) + c;
+  a = rotateLeft(a + f3(b,c,d) + words[9]  + 0xd9d4d039,  4) + b;
+  d = rotateLeft(d + f3(a,b,c) + words[12] + 0xe6db99e5, 11) + a;
+  c = rotateLeft(c + f3(d,a,b) + words[15] + 0x1fa27cf8, 16) + d;
+  b = rotateLeft(b + f3(c,d,a) + words[2]  + 0xc4ac5665, 23) + c;
 
   // fourth round
-  a = rotate(a + f4(b,c,d) + words[0]  + 0xf4292244,  6) + b;
-  d = rotate(d + f4(a,b,c) + words[7]  + 0x432aff97, 10) + a;
-  c = rotate(c + f4(d,a,b) + words[14] + 0xab9423a7, 15) + d;
-  b = rotate(b + f4(c,d,a) + words[5]  + 0xfc93a039, 21) + c;
+  a = rotateLeft(a + f4(b,c,d) + words[0]  + 0xf4292244,  6) + b;
+  d = rotateLeft(d + f4(a,b,c) + words[7]  + 0x432aff97, 10) + a;
+  c = rotateLeft(c + f4(d,a,b) + words[14] + 0xab9423a7, 15) + d;
+  b = rotateLeft(b + f4(c,d,a) + words[5]  + 0xfc93a039, 21) + c;
 
-  a = rotate(a + f4(b,c,d) + words[12] + 0x655b59c3,  6) + b;
-  d = rotate(d + f4(a,b,c) + words[3]  + 0x8f0ccc92, 10) + a;
-  c = rotate(c + f4(d,a,b) + words[10] + 0xffeff47d, 15) + d;
-  b = rotate(b + f4(c,d,a) + words[1]  + 0x85845dd1, 21) + c;
+  a = rotateLeft(a + f4(b,c,d) + words[12] + 0x655b59c3,  6) + b;
+  d = rotateLeft(d + f4(a,b,c) + words[3]  + 0x8f0ccc92, 10) + a;
+  c = rotateLeft(c + f4(d,a,b) + words[10] + 0xffeff47d, 15) + d;
+  b = rotateLeft(b + f4(c,d,a) + words[1]  + 0x85845dd1, 21) + c;
 
-  a = rotate(a + f4(b,c,d) + words[8]  + 0x6fa87e4f,  6) + b;
-  d = rotate(d + f4(a,b,c) + words[15] + 0xfe2ce6e0, 10) + a;
-  c = rotate(c + f4(d,a,b) + words[6]  + 0xa3014314, 15) + d;
-  b = rotate(b + f4(c,d,a) + words[13] + 0x4e0811a1, 21) + c;
+  a = rotateLeft(a + f4(b,c,d) + words[8]  + 0x6fa87e4f,  6) + b;
+  d = rotateLeft(d + f4(a,b,c) + words[15] + 0xfe2ce6e0, 10) + a;
+  c = rotateLeft(c + f4(d,a,b) + words[6]  + 0xa3014314, 15) + d;
+  b = rotateLeft(b + f4(c,d,a) + words[13] + 0x4e0811a1, 21) + c;
 
-  a = rotate(a + f4(b,c,d) + words[4]  + 0xf7537e82,  6) + b;
-  d = rotate(d + f4(a,b,c) + words[11] + 0xbd3af235, 10) + a;
-  c = rotate(c + f4(d,a,b) + words[2]  + 0x2ad7d2bb, 15) + d;
-  b = rotate(b + f4(c,d,a) + words[9]  + 0xeb86d391, 21) + c;
+  a = rotateLeft(a + f4(b,c,d) + words[4]  + 0xf7537e82,  6) + b;
+  d = rotateLeft(d + f4(a,b,c) + words[11] + 0xbd3af235, 10) + a;
+  c = rotateLeft(c + f4(d,a,b) + words[2]  + 0x2ad7d2bb, 15) + d;
+  b = rotateLeft(b + f4(c,d,a) + words[9]  + 0xeb86d391, 21) + c;
 
   // update hash
   _hash[0] += a;

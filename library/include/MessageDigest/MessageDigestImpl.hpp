@@ -52,4 +52,38 @@ inline std::string MessageDigestImpl::operator()(const std::string &text)
   return digest();
 }
 
+namespace{
+
+  /**
+   * @brief The circular left shift operation
+   */
+  inline uint32_t rotateLeft(uint32_t a, uint32_t c)
+  {
+    return (a << c) | (a >> (32 - c));
+  }
+
+  /**
+   * @brief The circular right shift operation
+   */
+  inline uint32_t rotateRight(uint32_t a, uint32_t c)
+  {
+    return (a >> c) | (a << (32 - c));
+  }
+
+  inline uint32_t swap(uint32_t x)
+  {
+#if defined(__GNUC__) || defined(__clang__)
+    return __builtin_bswap32(x);
+#endif
+#ifdef MSC_VER
+    return _byteswap_ulong(x);
+#endif
+
+    return (x >> 24) |
+        ((x >>  8) & 0x0000FF00) |
+        ((x <<  8) & 0x00FF0000) |
+        (x << 24);
+  }
+}
+
 #endif //MessageDigestImpl_INCLUDED
