@@ -17,13 +17,13 @@
 #ifndef MessageDigestSHA224_INCLUDED
 #define MessageDigestSHA224_INCLUDED
 
-#include "MessageDigest/MessageDigestSHA2.hpp"
+#include "MessageDigest/MessageDigestSHA256.hpp"
 
 #include <cstdint>
 #include <string>
 #include <memory>
 
-class MessageDigestSHA224:public MessageDigestSHA2 {
+class MessageDigestSHA224:public MessageDigestSHA256 {
 public:
   MessageDigestSHA224();
   ~MessageDigestSHA224() = default;
