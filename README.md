@@ -17,6 +17,7 @@ libMessageDigest currently supports the following algorithms:
 * CRC32
 * MD5
 * SHA1
+* SHA-224, SHA-256, SHA-512
 
 How to use
 --------------------------------------
