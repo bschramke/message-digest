@@ -29,6 +29,22 @@ static MessageDigestImplRegistrar<MessageDigestSHA512> registrar("SHA512");
 
 namespace
 {
+  /**
+   * @brief The circular left shift operation
+   */
+  inline uint64_t rotateLeft(uint64_t a, uint64_t c)
+  {
+    return (a << c) | (a >> (64 - c));
+  }
+
+  /**
+   * @brief The circular right shift operation
+   */
+  inline uint64_t rotateRight(uint64_t a, uint64_t c)
+  {
+    return (a >> c) | (a << (64 - c));
+  }
+
   // mix functions for processBlock()
   inline uint64_t f1(uint64_t e, uint64_t f, uint64_t g)
   {
@@ -201,21 +217,13 @@ void MessageDigestSHA512::processBlock(const void *data)
     0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
   };
 
-  // get last hash
-  uint64_t a = _hash[0];
-  uint64_t b = _hash[1];
-  uint64_t c = _hash[2];
-  uint64_t d = _hash[3];
-  uint64_t e = _hash[4];
-  uint64_t f = _hash[5];
-  uint64_t g = _hash[6];
-  uint64_t h = _hash[7];
-
   // data represented as 64-bit words
   const uint64_t* input = (uint64_t*) data;
 
-  // convert to big endian
+  // message schedule of eighty 64-bit words
   uint64_t words[80];
+
+  //Prepare the message schedule
   int i;
   for (i = 0; i < 16; i++)
     {
@@ -226,139 +234,36 @@ void MessageDigestSHA512::processBlock(const void *data)
 #endif
     }
 
+  for (;i < 80; i++)
+    {
+      words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
+    }
+
   uint64_t x,y; // temporaries
 
-  // first round
-  x = h + f1(e,f,g) + K[0] + words[ 0]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[1] + words[ 1]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[2] + words[ 2]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[3] + words[ 3]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[4] + words[ 4]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[5] + words[ 5]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[6] + words[ 6]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[7] + words[ 7]; y = f2(b,c,d); e += x; a = x + y;
+  // get last hash
+  uint64_t a = _hash[0];
+  uint64_t b = _hash[1];
+  uint64_t c = _hash[2];
+  uint64_t d = _hash[3];
+  uint64_t e = _hash[4];
+  uint64_t f = _hash[5];
+  uint64_t g = _hash[6];
+  uint64_t h = _hash[7];
 
-  // secound round
-  x = h + f1(e,f,g) + K[8] + words[ 8]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[9] + words[ 9]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[10] + words[10]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[11] + words[11]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[12] + words[12]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[13] + words[13]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[14] + words[14]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[15] + words[15]; y = f2(b,c,d); e += x; a = x + y;
-
-  // extend to 24 words
-  for (; i < 24; i++)
-    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
-
-  // third round
-  x = h + f1(e,f,g) + K[16] + words[16]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[17] + words[17]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[18] + words[18]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[19] + words[19]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[20] + words[20]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[21] + words[21]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[22] + words[22]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[23] + words[23]; y = f2(b,c,d); e += x; a = x + y;
-
-  // extend to 32 words
-  for (; i < 32; i++)
-    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
-
-  // fourth round
-  x = h + f1(e,f,g) + K[24] + words[24]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[25] + words[25]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[26] + words[26]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[27] + words[27]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[28] + words[28]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[29] + words[29]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[30] + words[30]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[31] + words[31]; y = f2(b,c,d); e += x; a = x + y;
-
-  // extend to 40 words
-  for (; i < 40; i++)
-    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
-
-  // fifth round
-  x = h + f1(e,f,g) + K[32] + words[32]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[33] + words[33]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[34] + words[34]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[35] + words[35]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[36] + words[36]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[37] + words[37]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[38] + words[38]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[39] + words[39]; y = f2(b,c,d); e += x; a = x + y;
-
-  // extend to 48 words
-  for (; i < 48; i++)
-    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
-
-  // sixth round
-  x = h + f1(e,f,g) + K[40] + words[40]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[41] + words[41]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[42] + words[42]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[43] + words[43]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[44] + words[44]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[45] + words[45]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[46] + words[46]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[47] + words[47]; y = f2(b,c,d); e += x; a = x + y;
-
-  // extend to 56 words
-  for (; i < 56; i++)
-    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
-
-  // seventh round
-  x = h + f1(e,f,g) + K[48] + words[48]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[49] + words[49]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[50] + words[50]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[51] + words[51]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[52] + words[52]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[53] + words[53]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[54] + words[54]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[55] + words[55]; y = f2(b,c,d); e += x; a = x + y;
-
-  // extend to 64 words
-  for (; i < 64; i++)
-    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
-
-  // eigth round
-  x = h + f1(e,f,g) + K[56] + words[56]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[57] + words[57]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[58] + words[58]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[59] + words[59]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[60] + words[60]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[61] + words[61]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[62] + words[62]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[63] + words[63]; y = f2(b,c,d); e += x; a = x + y;
-
-  // extend to 72 words
-  for (; i < 72; i++)
-    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
-
-  // eigth round
-  x = h + f1(e,f,g) + K[64] + words[64]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[65] + words[65]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[66] + words[66]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[67] + words[67]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[68] + words[68]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[69] + words[69]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[70] + words[70]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[71] + words[71]; y = f2(b,c,d); e += x; a = x + y;
-
-  // extend to 80 words
-  for (; i < 80; i++)
-    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
-
-  // eigth round
-  x = h + f1(e,f,g) + K[72] + words[72]; y = f2(a,b,c); d += x; h = x + y;
-  x = g + f1(d,e,f) + K[73] + words[73]; y = f2(h,a,b); c += x; g = x + y;
-  x = f + f1(c,d,e) + K[74] + words[74]; y = f2(g,h,a); b += x; f = x + y;
-  x = e + f1(b,c,d) + K[75] + words[75]; y = f2(f,g,h); a += x; e = x + y;
-  x = d + f1(a,b,c) + K[76] + words[76]; y = f2(e,f,g); h += x; d = x + y;
-  x = c + f1(h,a,b) + K[77] + words[77]; y = f2(d,e,f); g += x; c = x + y;
-  x = b + f1(g,h,a) + K[78] + words[78]; y = f2(c,d,e); f += x; b = x + y;
-  x = a + f1(f,g,h) + K[79] + words[79]; y = f2(b,c,d); e += x; a = x + y;
+  i=0;
+  do
+    {
+      x = h + f1(e,f,g) + K[i] + words[ i]; y = f2(a,b,c); d += x; h = x + y; i++;
+      x = g + f1(d,e,f) + K[i] + words[ i]; y = f2(h,a,b); c += x; g = x + y; i++;
+      x = f + f1(c,d,e) + K[i] + words[ i]; y = f2(g,h,a); b += x; f = x + y; i++;
+      x = e + f1(b,c,d) + K[i] + words[ i]; y = f2(f,g,h); a += x; e = x + y; i++;
+      x = d + f1(a,b,c) + K[i] + words[ i]; y = f2(e,f,g); h += x; d = x + y; i++;
+      x = c + f1(h,a,b) + K[i] + words[ i]; y = f2(d,e,f); g += x; c = x + y; i++;
+      x = b + f1(g,h,a) + K[i] + words[ i]; y = f2(c,d,e); f += x; b = x + y; i++;
+      x = a + f1(f,g,h) + K[i] + words[ i]; y = f2(b,c,d); e += x; a = x + y; i++;
+    }
+  while(i<80);
 
   // update hash
   _hash[0] += a;
@@ -410,12 +315,12 @@ void MessageDigestSHA512::processBuffer()
   for (; i < paddedLength; i++)
     extra[i - BLOCK_SIZE] = 0;
 
-  // add message length in bits as 64 bit number
+  // add message length in bits as 128 bit number
   uint64_t msgBits = 8 * (_numBytes + _bufferSize);
   // find right position
   unsigned char* addLength;
   if (paddedLength < BLOCK_SIZE)
-    addLength = _buffer + paddedLength;
+    addLength = _buffer + paddedLength + 8;
   else
     addLength = extra + paddedLength - BLOCK_SIZE;
 

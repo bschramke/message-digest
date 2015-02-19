@@ -54,22 +54,6 @@ inline std::string MessageDigestImpl::operator()(const std::string &text)
 
 namespace{
 
-  /**
-   * @brief The circular left shift operation
-   */
-  inline uint32_t rotateLeft(uint32_t a, uint32_t c)
-  {
-    return (a << c) | (a >> (32 - c));
-  }
-
-  /**
-   * @brief The circular right shift operation
-   */
-  inline uint32_t rotateRight(uint32_t a, uint32_t c)
-  {
-    return (a >> c) | (a << (32 - c));
-  }
-
   inline uint32_t swap32(uint32_t x)
   {
 #if defined(__GNUC__) || defined(__clang__)

@@ -29,6 +29,22 @@ static MessageDigestImplRegistrar<MessageDigestSHA256> registrar("SHA256");
 
 namespace
 {
+  /**
+   * @brief The circular left shift operation
+   */
+  inline uint32_t rotateLeft(uint32_t a, uint32_t c)
+  {
+    return (a << c) | (a >> (32 - c));
+  }
+
+  /**
+   * @brief The circular right shift operation
+   */
+  inline uint32_t rotateRight(uint32_t a, uint32_t c)
+  {
+    return (a >> c) | (a << (32 - c));
+  }
+
   // mix functions for processBlock()
   inline uint32_t f1(uint32_t e, uint32_t f, uint32_t g)
   {
