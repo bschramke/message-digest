@@ -12,6 +12,7 @@ set(MessageDigest_SRCS  src/MessageDigest.cpp
                         src/MessageDigestSHA1.cpp
                         src/MessageDigestSHA224.cpp
                         src/MessageDigestSHA256.cpp
+                        src/MessageDigestSHA512.cpp
 )
 
 include_directories(include)

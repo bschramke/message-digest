@@ -12,6 +12,7 @@ set(TEST_SRCS src/main.cpp
               src/MessageDigestSHA1Test.cpp  
               src/MessageDigestSHA224Test.cpp  
               src/MessageDigestSHA256Test.cpp 
+              src/MessageDigestSHA512Test.cpp 
               src/MessageDigestTest.cpp 
 )
 
