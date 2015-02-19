@@ -117,7 +117,7 @@ std::string MessageDigestSHA512::digest()
   processBuffer();
 
   // create hash string
-  char hashBuffer[HASH_SIZE*8+1];
+  char hashBuffer[HASH_SIZE*16+1];
   size_t offset = 0;
   for (int i = 0; i < HASH_SIZE; i++)
   {
