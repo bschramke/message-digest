@@ -186,7 +186,7 @@ void MessageDigestSHA1::processBlock(const void *data)
 #if defined(__BYTE_ORDER) && (__BYTE_ORDER != 0) && (__BYTE_ORDER == __BIG_ENDIAN)
       words[i] = input[i];
 #else
-      words[i] = swap(input[i]);
+      words[i] = swap32(input[i]);
 #endif
     }
 

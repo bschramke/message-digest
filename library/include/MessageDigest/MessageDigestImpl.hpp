@@ -70,7 +70,7 @@ namespace{
     return (a >> c) | (a << (32 - c));
   }
 
-  inline uint32_t swap(uint32_t x)
+  inline uint32_t swap32(uint32_t x)
   {
 #if defined(__GNUC__) || defined(__clang__)
     return __builtin_bswap32(x);
@@ -83,6 +83,25 @@ namespace{
         ((x >>  8) & 0x0000FF00) |
         ((x <<  8) & 0x00FF0000) |
         (x << 24);
+  }
+
+  inline uint64_t swap64(uint64_t x)
+  {
+#if defined(__GNUC__) || defined(__clang__)
+    return __builtin_bswap64(x);
+#endif
+#ifdef MSC_VER
+    return _byteswap_uint64(x);
+#endif
+
+    return (x >> 56) |
+        ((x >>  40) & 0x000000000000FF00) |
+        ((x >>  24) & 0x0000000000FF0000) |
+        ((x >>  8) & 0x00000000FF000000) |
+        ((x <<  8) & 0x000000FF00000000) |
+        ((x <<  24) & 0x0000FF0000000000) |
+        ((x <<  40) & 0x00FF000000000000) |
+        (x << 56);
   }
 }
 

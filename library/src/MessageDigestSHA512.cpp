@@ -1,5 +1,5 @@
 /**
- * @file MessageDigestSHA256.cpp
+ * @file MessageDigestSHA512.cpp
  *
  * Copyright (c) 2015 Björn Schramke. All rights reserved.
  *
@@ -15,7 +15,7 @@
  *
  */
 
-#include "MessageDigest/MessageDigestSHA256.hpp"
+#include "MessageDigest/MessageDigestSHA512.hpp"
 #include "MessageDigest/MessageDigest.hpp"
 
 #include <iostream>
@@ -25,75 +25,75 @@
 #include <endian.h>
 #endif
 
-static MessageDigestImplRegistrar<MessageDigestSHA256> registrar("SHA256");
+static MessageDigestImplRegistrar<MessageDigestSHA512> registrar("SHA512");
 
 namespace
 {
   // mix functions for processBlock()
-  inline uint32_t f1(uint32_t e, uint32_t f, uint32_t g)
+  inline uint64_t f1(uint64_t e, uint64_t f, uint64_t g)
   {
-    uint32_t term1 = rotateRight(e, 6) ^ rotateRight(e, 11) ^ rotateRight(e, 25);
-    uint32_t term2 = (e & f) ^ (~e & g); //(g ^ (e & (f ^ g)))
+    uint64_t term1 = rotateRight(e, 14) ^ rotateRight(e, 18) ^ rotateRight(e, 41);
+    uint64_t term2 = (e & f) ^ (~e & g); //(g ^ (e & (f ^ g)))
     return term1 + term2;
   }
 
-  inline uint32_t f2(uint32_t a, uint32_t b, uint32_t c)
+  inline uint64_t f2(uint64_t a, uint64_t b, uint64_t c)
   {
-    uint32_t term1 = rotateRight(a, 2) ^ rotateRight(a, 13) ^ rotateRight(a, 22);
-    uint32_t term2 = ((a | b) & c) | (a & b); //(a & (b ^ c)) ^ (b & c);
+    uint64_t term1 = rotateRight(a, 28) ^ rotateRight(a, 34) ^ rotateRight(a, 39);
+    uint64_t term2 = ((a | b) & c) | (a & b); //(a & (b ^ c)) ^ (b & c);
     return term1 + term2;
   }
 
-  inline uint32_t f3(uint32_t a)
+  inline uint64_t f3(uint64_t a)
   {
-    return rotateRight(a, 7) ^ rotateRight(a, 18) ^ (a >> 3);
+    return rotateRight(a, 1) ^ rotateRight(a, 8) ^ (a >> 7);
   }
 
-  inline uint32_t f4(uint32_t a)
+  inline uint64_t f4(uint64_t a)
   {
-    return rotateRight(a, 17) ^ rotateRight(a, 19) ^ (a >> 10);
+    return rotateRight(a, 19) ^ rotateRight(a, 61) ^ (a >> 6);
   }
 }
 
-MessageDigestSHA256::MessageDigestSHA256()
+MessageDigestSHA512::MessageDigestSHA512()
 {
   reset();
 }
 
-std::string MessageDigestSHA256::getAlgorithm() const
+std::string MessageDigestSHA512::getAlgorithm() const
 {
   return "SHA256";
 }
 
-void MessageDigestSHA256::reset()
+void MessageDigestSHA512::reset()
 {
   _numBytes   = 0;
   _bufferSize = 0;
 
-  // according to RFC 6234 section 6.1
-  _hash[0] = 0x6a09e667;
-  _hash[1] = 0xbb67ae85;
-  _hash[2] = 0x3c6ef372;
-  _hash[3] = 0xa54ff53a;
-  _hash[4] = 0x510e527f;
-  _hash[5] = 0x9b05688c;
-  _hash[6] = 0x1f83d9ab;
-  _hash[7] = 0x5be0cd19;
+  // according to RFC 6234 section 6.3
+  _hash[0] = 0x6a09e667f3bcc908;
+  _hash[1] = 0xbb67ae8584caa73b;
+  _hash[2] = 0x3c6ef372fe94f82b;
+  _hash[3] = 0xa54ff53a5f1d36f1;
+  _hash[4] = 0x510e527fade682d1;
+  _hash[5] = 0x9b05688c2b3e6c1f;
+  _hash[6] = 0x1f83d9abfb41bd6b;
+  _hash[7] = 0x5be0cd19137e2179;
 
 }
 
-std::unique_ptr<MessageDigestImpl> MessageDigestSHA256::create()
+std::unique_ptr<MessageDigestImpl> MessageDigestSHA512::create()
 {
-  return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA256());
+  return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA512());
 }
 
-std::string MessageDigestSHA256::digest()
+std::string MessageDigestSHA512::digest()
 {
   // convert hash to string
   static const char dec2hex[16+1] = "0123456789abcdef";
 
   // save old hash if buffer is partially filled
-  uint32_t oldHash[HASH_SIZE];
+  uint64_t oldHash[HASH_SIZE];
   for (int i = 0; i < HASH_SIZE; i++)
     oldHash[i] = _hash[i];
 
@@ -105,6 +105,14 @@ std::string MessageDigestSHA256::digest()
   size_t offset = 0;
   for (int i = 0; i < HASH_SIZE; i++)
   {
+    hashBuffer[offset++] = dec2hex[(_hash[i] >> 60) & 15];
+    hashBuffer[offset++] = dec2hex[(_hash[i] >> 56) & 15];
+    hashBuffer[offset++] = dec2hex[(_hash[i] >> 52) & 15];
+    hashBuffer[offset++] = dec2hex[(_hash[i] >> 48) & 15];
+    hashBuffer[offset++] = dec2hex[(_hash[i] >> 44) & 15];
+    hashBuffer[offset++] = dec2hex[(_hash[i] >> 40) & 15];
+    hashBuffer[offset++] = dec2hex[(_hash[i] >> 36) & 15];
+    hashBuffer[offset++] = dec2hex[(_hash[i] >> 32) & 15];
     hashBuffer[offset++] = dec2hex[(_hash[i] >> 28) & 15];
     hashBuffer[offset++] = dec2hex[(_hash[i] >> 24) & 15];
     hashBuffer[offset++] = dec2hex[(_hash[i] >> 20) & 15];
@@ -124,7 +132,7 @@ std::string MessageDigestSHA256::digest()
   return hashBuffer;
 }
 
-void MessageDigestSHA256::update(const void *data, const size_t offset, const size_t len)
+void MessageDigestSHA512::update(const void *data, const size_t offset, const size_t len)
 {
   const uint8_t* current = (const uint8_t*) data + offset;
   size_t numBytes = len;
@@ -167,54 +175,58 @@ void MessageDigestSHA256::update(const void *data, const size_t offset, const si
   }
 }
 
-void MessageDigestSHA256::processBlock(const void *data)
+void MessageDigestSHA512::processBlock(const void *data)
 {
-  /* Constants defined in RFC 6234 section 5.1   */
-  static constexpr uint32_t K[] =    {
-    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
-    0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
-    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
-    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
-    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc,
-    0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7,
-    0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
-    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
-    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
-    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3,
-    0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5,
-    0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
-    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
-    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+  /* Constants defined in RFC 6234 section 5.2   */
+  static constexpr uint64_t K[] =    {
+    0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
+    0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
+    0xd807aa98a3030242, 0x12835b0145706fbe, 0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2,
+    0x72be5d74f27b896f, 0x80deb1fe3b1696b1, 0x9bdc06a725c71235, 0xc19bf174cf692694,
+    0xe49b69c19ef14ad2, 0xefbe4786384f25e3, 0x0fc19dc68b8cd5b5, 0x240ca1cc77ac9c65,
+    0x2de92c6f592b0275, 0x4a7484aa6ea6e483, 0x5cb0a9dcbd41fbd4, 0x76f988da831153b5,
+    0x983e5152ee66dfab, 0xa831c66d2db43210, 0xb00327c898fb213f, 0xbf597fc7beef0ee4,
+    0xc6e00bf33da88fc2, 0xd5a79147930aa725, 0x06ca6351e003826f, 0x142929670a0e6e70,
+    0x27b70a8546d22ffc, 0x2e1b21385c26c926, 0x4d2c6dfc5ac42aed, 0x53380d139d95b3df,
+    0x650a73548baf63de, 0x766a0abb3c77b2a8, 0x81c2c92e47edaee6, 0x92722c851482353b,
+    0xa2bfe8a14cf10364, 0xa81a664bbc423001, 0xc24b8b70d0f89791, 0xc76c51a30654be30,
+    0xd192e819d6ef5218, 0xd69906245565a910, 0xf40e35855771202a, 0x106aa07032bbd1b8,
+    0x19a4c116b8d2d0c8, 0x1e376c085141ab53, 0x2748774cdf8eeb99, 0x34b0bcb5e19b48a8,
+    0x391c0cb3c5c95a63, 0x4ed8aa4ae3418acb, 0x5b9cca4f7763e373, 0x682e6ff3d6b2b8a3,
+    0x748f82ee5defb2fc, 0x78a5636f43172f60, 0x84c87814a1f0ab72, 0x8cc702081a6439ec,
+    0x90befffa23631e28, 0xa4506cebde82bde9, 0xbef9a3f7b2c67915, 0xc67178f2e372532b,
+    0xca273eceea26619c, 0xd186b8c721c0c207, 0xeada7dd6cde0eb1e, 0xf57d4f7fee6ed178,
+    0x06f067aa72176fba, 0x0a637dc5a2c898a6, 0x113f9804bef90dae, 0x1b710b35131c471b,
+    0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
+    0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
   };
 
   // get last hash
-  uint32_t a = _hash[0];
-  uint32_t b = _hash[1];
-  uint32_t c = _hash[2];
-  uint32_t d = _hash[3];
-  uint32_t e = _hash[4];
-  uint32_t f = _hash[5];
-  uint32_t g = _hash[6];
-  uint32_t h = _hash[7];
+  uint64_t a = _hash[0];
+  uint64_t b = _hash[1];
+  uint64_t c = _hash[2];
+  uint64_t d = _hash[3];
+  uint64_t e = _hash[4];
+  uint64_t f = _hash[5];
+  uint64_t g = _hash[6];
+  uint64_t h = _hash[7];
 
-  // data represented as 16x 32-bit words
-  const uint32_t* input = (uint32_t*) data;
+  // data represented as 64-bit words
+  const uint64_t* input = (uint64_t*) data;
 
   // convert to big endian
-  uint32_t words[64];
+  uint64_t words[80];
   int i;
   for (i = 0; i < 16; i++)
     {
 #if defined(__BYTE_ORDER) && (__BYTE_ORDER != 0) && (__BYTE_ORDER == __BIG_ENDIAN)
       words[i] = input[i];
 #else
-      words[i] = swap32(input[i]);
+      words[i] = swap64(input[i]);
 #endif
     }
 
-  uint32_t x,y; // temporaries
+  uint64_t x,y; // temporaries
 
   // first round
   x = h + f1(e,f,g) + K[0] + words[ 0]; y = f2(a,b,c); d += x; h = x + y;
@@ -320,6 +332,34 @@ void MessageDigestSHA256::processBlock(const void *data)
   x = b + f1(g,h,a) + K[62] + words[62]; y = f2(c,d,e); f += x; b = x + y;
   x = a + f1(f,g,h) + K[63] + words[63]; y = f2(b,c,d); e += x; a = x + y;
 
+  // extend to 72 words
+  for (; i < 72; i++)
+    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
+
+  // eigth round
+  x = h + f1(e,f,g) + K[64] + words[64]; y = f2(a,b,c); d += x; h = x + y;
+  x = g + f1(d,e,f) + K[65] + words[65]; y = f2(h,a,b); c += x; g = x + y;
+  x = f + f1(c,d,e) + K[66] + words[66]; y = f2(g,h,a); b += x; f = x + y;
+  x = e + f1(b,c,d) + K[67] + words[67]; y = f2(f,g,h); a += x; e = x + y;
+  x = d + f1(a,b,c) + K[68] + words[68]; y = f2(e,f,g); h += x; d = x + y;
+  x = c + f1(h,a,b) + K[69] + words[69]; y = f2(d,e,f); g += x; c = x + y;
+  x = b + f1(g,h,a) + K[70] + words[70]; y = f2(c,d,e); f += x; b = x + y;
+  x = a + f1(f,g,h) + K[71] + words[71]; y = f2(b,c,d); e += x; a = x + y;
+
+  // extend to 80 words
+  for (; i < 80; i++)
+    words[i] = words[i-16] + f3(words[i-15]) + words[i-7] + f4(words[i- 2]);
+
+  // eigth round
+  x = h + f1(e,f,g) + K[72] + words[72]; y = f2(a,b,c); d += x; h = x + y;
+  x = g + f1(d,e,f) + K[73] + words[73]; y = f2(h,a,b); c += x; g = x + y;
+  x = f + f1(c,d,e) + K[74] + words[74]; y = f2(g,h,a); b += x; f = x + y;
+  x = e + f1(b,c,d) + K[75] + words[75]; y = f2(f,g,h); a += x; e = x + y;
+  x = d + f1(a,b,c) + K[76] + words[76]; y = f2(e,f,g); h += x; d = x + y;
+  x = c + f1(h,a,b) + K[77] + words[77]; y = f2(d,e,f); g += x; c = x + y;
+  x = b + f1(g,h,a) + K[78] + words[78]; y = f2(c,d,e); f += x; b = x + y;
+  x = a + f1(f,g,h) + K[79] + words[79]; y = f2(b,c,d); e += x; a = x + y;
+
   // update hash
   _hash[0] += a;
   _hash[1] += b;
@@ -332,12 +372,12 @@ void MessageDigestSHA256::processBlock(const void *data)
 }
 
 /// process final block, less than 64 bytes
-void MessageDigestSHA256::processBuffer()
+void MessageDigestSHA512::processBuffer()
 {
   // the input bytes are considered as bits strings, where the first bit is the most significant bit of the byte
 
   // - append "1" bit to message
-  // - append "0" bits until message length in bit mod 512 is 448
+  // - append "0" bits until message length in bit mod 1024 is 896
   // - append length as 64 bit integer
 
   // number of bits
@@ -346,12 +386,12 @@ void MessageDigestSHA256::processBuffer()
   // plus one bit set to 1 (always appended)
   paddedLength++;
 
-  // number of bits must be (numBits % 512) = 448
-  size_t lower11Bits = paddedLength & 511;
-  if (lower11Bits <= 448)
-    paddedLength +=       448 - lower11Bits;
+  // number of bits must be (numBits % 1024) = 896
+  size_t lower11Bits = paddedLength & 1023;
+  if (lower11Bits <= 896)
+    paddedLength +=       896 - lower11Bits;
   else
-    paddedLength += 512 + 448 - lower11Bits;
+    paddedLength += 1024 + 896 - lower11Bits;
   // convert from bits to bytes
   paddedLength /= 8;
 

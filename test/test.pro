@@ -10,8 +10,9 @@ SOURCES += \
     src/MessageDigestCRC32Test.cpp \
     src/MessageDigestMD5Test.cpp \
     src/MessageDigestSHA1Test.cpp \
-    src/MessageDigestSHA256Test.cpp \
     src/MessageDigestSHA224Test.cpp \
+    src/MessageDigestSHA256Test.cpp \
+    src/MessageDigestSHA512Test.cpp \
     src/MessageDigestTest.cpp
 
 HEADERS += \
@@ -19,8 +20,9 @@ HEADERS += \
     src/MessageDigestCRC32Test.hpp \
     src/MessageDigestMD5Test.hpp \
     src/MessageDigestSHA1Test.hpp \
-    src/MessageDigestSHA256Test.hpp \
     src/MessageDigestSHA224Test.hpp \
+    src/MessageDigestSHA256Test.hpp \
+    src/MessageDigestSHA512Test.hpp \
     src/MessageDigestTest.hpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../library/release/ -lMessageDiggest
