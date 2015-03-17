@@ -20,7 +20,7 @@ addons:
       description: "Build submitted via Travis CI"
     notification_email: bjoern@schramke-online.de
     build_command_prepend: "make clean"
-    build_command:   "make -j4"
+    build_command:   "make"
     branch_pattern: master
 
 script: 
