@@ -1,6 +1,7 @@
 MessageDigest library for C++
 ==================
 [![Build Status](https://travis-ci.org/bschramke/message-digest.svg)](https://travis-ci.org/bschramke/message-digest)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/4548/badge.svg)](https://scan.coverity.com/projects/4548)
 
 libMessageDigest is an free and easy-to-use message digest library for C++.
 
