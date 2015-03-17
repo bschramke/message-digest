@@ -9,12 +9,6 @@ env:
    #   via the "travis encrypt" command using the project repo's public key
    - secure: "I0EhQ+xDEgUMNNTM34i72euS51Yx4oaDGLw2Cj7qAXKjqbDHP2p3QJNTdLCtyGCpTe9yKH0Ha5Yr89kDS/wBTZdAnMJgLAyU5+WQSgGmhCqCVBKUb366XEkD9EXdlLwfrtOwR6aL+8URW36i7ljoD8FS7Txmv9mRP1LC1QDdSM4="
 
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "I0EhQ+xDEgUMNNTM34i72euS51Yx4oaDGLw2Cj7qAXKjqbDHP2p3QJNTdLCtyGCpTe9yKH0Ha5Yr89kDS/wBTZdAnMJgLAyU5+WQSgGmhCqCVBKUb366XEkD9EXdlLwfrtOwR6aL+8URW36i7ljoD8FS7Txmv9mRP1LC1QDdSM4="
-
 install:
   - .travis_scripts/cmake.sh
   - sudo apt-get install libcppunit-dev
