@@ -19,7 +19,7 @@ addons:
       name: "bschramke/message-digest"
       description: "Build submitted via Travis CI"
     notification_email: bjoern@schramke-online.de
-    build_command_prepend: "mkdir build && cd build; cmake ../; make clean"
+    build_command_prepend: "make clean"
     build_command:   "make -j4"
     branch_pattern: master
 
